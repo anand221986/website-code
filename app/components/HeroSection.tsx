@@ -3,7 +3,7 @@ import { Search, ArrowRight, CheckCircle, Users, Briefcase, Star, Calendar, Mail
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { gsap } from "gsap";
-import HeroSlider from "./HeroSlider";
+import HeroSlider from "./sections/HeroSlider";
 
 const HeroSection = () => {
   const heroRef = useRef(null);

@@ -12,7 +12,7 @@ export default function LeftImageRightContentSection({ data }: any) {
 
   return (
     <section className="pt-24 pb-10 relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 scroll-reveal">
-      
+
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
 

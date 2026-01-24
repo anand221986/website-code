@@ -41,7 +41,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
 
   return (
     <section className="pt-24 pb-10 min-h-[95vh] relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      
+
       {/* Background blobs */}
    <div className="absolute top-20 right-10 w-48 h-48 bg-gradient-to-br from-emerald-400/20 to-teal-400/15 rounded-full blur-3xl animate-pulse" />
 

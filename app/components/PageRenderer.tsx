@@ -11,11 +11,10 @@ import LeadershipSection from "./sections/LeadershipSection";
 import LeftImageRightContentSection from "./sections/LeftImageRightContentSection";
 import RightImageLeftContentSectionn from "./sections/RightImageLeftContentSection";
 import MiddleSection from "./sections/MiddleSection";
-import HeroSlider from "./sections/HeroSlider";
+import HeroSlider from "./sections/HeroSection";
 import FaqSection from "./sections/FaqSection";
 import BlogsSection from "./sections/BlogsSection";
-
-
+import USPList from "./sections/USPList";
 import { useMemo } from "react";
 interface PageRendererProps {
   page: {
@@ -109,6 +108,10 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             return <MiddleSection key={section.id} data={section} />;
               case "blogs":
             return <BlogsSection key={section.id} data={section} />;
+case "usp_items":
+ return <USPList key={section.id} data={section} />;
+
+
 
           default:
             console.warn("Unhandled section:", section.section_key);
@@ -129,14 +132,14 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
         }
         .animate-slideInLeft { animation: slideInLeft 0.8s ease-out forwards; }
         .animate-slideInRight { animation: slideInRight 0.8s ease-out forwards; }
-        .scroll-reveal { 
-          opacity: 0; 
-          transform: translateY(50px); 
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+        .scroll-reveal {
+          opacity: 0;
+          transform: translateY(50px);
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .scroll-reveal.visible { 
-          opacity: 1; 
-          transform: translateY(0); 
+        .scroll-reveal.visible {
+          opacity: 1;
+          transform: translateY(0);
         }
       `}</style>
 

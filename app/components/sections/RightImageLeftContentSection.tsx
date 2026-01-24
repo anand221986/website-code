@@ -112,5 +112,4 @@ export default function LeftImageRightContentSection({ data }: any) {
         </div>
       </div>
     </section>
-  );
-}
+  )}
