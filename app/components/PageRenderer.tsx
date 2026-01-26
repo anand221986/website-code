@@ -13,6 +13,7 @@ import RightImageLeftContentSectionn from "./sections/RightImageLeftContentSecti
 import SliderSection from "./sections/SliderSection";
 
 import { useMemo } from "react";
+import MiddleSection from "./sections/MiddleSection";
 
 interface PageRendererProps {
   page: {
@@ -123,6 +124,8 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             return (
               <LeftImageRightContentSection key={section.id} data={section} />
             );
+          case "middleContent":
+            return <MiddleSection key={section.id} data={section} />;
           case "rightImageLeftContent":
             return (
               <RightImageLeftContentSectionn key={section.id} data={section} />
