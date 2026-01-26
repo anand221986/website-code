@@ -87,7 +87,7 @@ export default function BlogsPage() {
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                   category === cat
                     ? "bg-emerald-600 text-white shadow-md scale-105"
                     : "bg-white/80 backdrop-blur border text-gray-600 hover:bg-emerald-50"
