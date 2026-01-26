@@ -3,81 +3,49 @@
 import React from "react";
 import { Button } from "@/app/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
-import DOMPurify from "dompurify";
 
 export default function LeftImageRightContentSection({ data }: any) {
   const { title, sub_title, meta } = data;
-  const safeTitle = DOMPurify.sanitize(title);
 
   return (
-    <section className="pt-24 pb-10 relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 scroll-reveal">
-      
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
-
-    {/* LEFT IMAGE */}
-{meta?.image && (
-  <div className="relative order-2 lg:order-1">
-    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-white/50 transform hover:scale-105 transition-transform duration-500">
-      <Image
-        src={meta.image}
-        alt={title || "Section image"}
-        width={800}
-        height={500}
-        className="w-full h-[400px] object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/20 via-transparent to-transparent" />
-    </div>
-  </div>
-)}
-
-          {/* RIGHT CONTENT */}
-          <div className="space-y-6">
-            {meta?.badge && (
-              <span className="inline-block px-4 py-2 rounded-full bg-white shadow text-sm font-semibold text-emerald-600">
-                {meta.badge}
-              </span>
-            )}
-
-            <div
-              className="text-3xl md:text-4xl font-bold leading-tight"
-              dangerouslySetInnerHTML={{ __html: safeTitle }}
+    <section className="pt-24 pb-10 min-h-[95vh] relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 scroll-reveal">
+      <div className="container mx-auto px-6 py-20 flex flex-col lg:flex-row items-center gap-10">
+        {meta?.image && (
+          <div className="lg:w-1/2">
+            <Image
+              src={meta.image}
+              alt={title}
+              className="w-full rounded-lg shadow-lg"
+              width={600}
+              height={400}
             />
-
-            {sub_title && (
-              <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-                {sub_title}
-              </p>
-            )}
-
-            {meta?.content && (
-              <div
-                className="text-gray-700 max-w-xl"
-                dangerouslySetInnerHTML={{ __html: meta.content }}
-              />
-            )}
-
-            {/* CTA BUTTONS */}
-            <div className="flex flex-wrap gap-4 pt-4">
-              {meta?.ctaPrimary?.url && (
-                <Link href={meta.ctaPrimary.url}>
-                  <Button className="px-6 py-3">
-                    {meta.ctaPrimary.label}
-                  </Button>
-                </Link>
-              )}
-
-              {meta?.ctaSecondary?.url && (
-                <Link href={meta.ctaSecondary.url}>
-                  <Button variant="outline" className="px-6 py-3">
-                    {meta.ctaSecondary.label}
-                  </Button>
-                </Link>
-              )}
-            </div>
+            {/* <img src={meta.image} alt={title} className="w-full rounded-lg shadow-lg" /> */}
           </div>
+        )}
 
+        <div className="lg:w-1/2">
+          {meta?.badge && (
+            <span className="text-sm text-emerald-600 font-semibold">
+              {meta.badge}
+            </span>
+          )}
+          <h2 className="text-5xl font-bold mt-4">{title}</h2>
+          {sub_title && (
+            <p className="text-xl text-gray-600 mt-4">{sub_title}</p>
+          )}
+          {meta?.content && (
+            <div
+              className="mt-4 text-gray-700"
+              dangerouslySetInnerHTML={{ __html: meta.content }}
+            />
+          )}
+          {meta?.cta?.length > 0 && (
+            <div className="flex gap-4 mt-8">
+              {meta.cta.map((btn: any, i: number) => (
+                <Button key={i}>{btn.label}</Button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -5,8 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function SliderSection({ data }: { data: any }) {
-   const { title, sub_title, images, section_key, meta} = data;
-  const sectiontitle = title?.replace(/^<p>|<\/p>$/g, "");
+  const { title, sub_title, images, section_key, meta } = data;
 
   const isSlider = section_key === "slider";
 
@@ -31,9 +30,7 @@ export default function SliderSection({ data }: { data: any }) {
         {(title || sub_title) && (
           <div className="text-center mb-10">
             {title && <h2 className="text-4xl font-bold">{title}</h2>}
-            {sub_title && (
-              <p className="text-gray-600 mt-3">{sub_title}</p>
-            )}
+            {sub_title && <p className="text-gray-600 mt-3">{sub_title}</p>}
           </div>
         )}
 
@@ -110,9 +107,7 @@ export default function SliderSection({ data }: { data: any }) {
                     key={i}
                     onClick={() => setCurrent(i)}
                     className={`w-3 h-3 rounded-full ${
-                      i === current
-                        ? "bg-emerald-600"
-                        : "bg-gray-300"
+                      i === current ? "bg-emerald-600" : "bg-gray-300"
                     }`}
                   />
                 ))}
