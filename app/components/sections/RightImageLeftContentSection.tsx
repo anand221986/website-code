@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
@@ -26,9 +27,7 @@ export default function RightImageLeftContentSection({ data }: any) {
           {/* ================= LEFT CONTENT ================= */}
           <div className="space-y-6">
             {/* PRICE BADGE (static for now, CMS later if needed) */}
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white shadow-md border text-emerald-600 font-semibold text-sm">
-              Starting at $1,200 per placement
-            </div>
+         
 
             {/* TITLE (HTML FROM CMS) */}
             {title && (
@@ -63,12 +62,26 @@ export default function RightImageLeftContentSection({ data }: any) {
             )}
 
             {/* CTA */}
-            {meta?.ctaPrimary && (
+                     {meta?.ctaPrimary?.url && (
               <div className="pt-6">
-                <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg group">
-                  {meta.ctaPrimary.label}
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                <Link href={meta.ctaPrimary.url}>
+                  <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                    {meta.ctaPrimary.label}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-2"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </Button>
+                </Link>
               </div>
             )}
           </div>

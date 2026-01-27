@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
-
+import DOMPurify from "dompurify";
 interface MiddleSectionProps {
   data: {
     title: string;
@@ -13,6 +13,7 @@ interface MiddleSectionProps {
       image: string | null;
       heading: string;
       description: string;
+       content?: string;
       features: string[];
       ctaPrimary?: {
         url: string;
@@ -24,12 +25,16 @@ interface MiddleSectionProps {
 
 export default function MiddleSection({ data }: MiddleSectionProps) {
   const { title, sub_title, meta } = data;
+    const safeTitle = title ? DOMPurify.sanitize(title) : "";
+  const safeContent = meta?.content
+    ? DOMPurify.sanitize(meta.content)
+    : "";
 
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         {/* ================= SECTION HEADER ================= */}
-        <div className="text-center mb-12">
+        {/* <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">
             {title}
           </h2>
@@ -37,7 +42,22 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
           <p className="text-sm md:text-base text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {sub_title}
           </p>
-        </div>
+        </div> */}
+
+              <div className="text-center mb-12">
+            {safeTitle && (
+              <div
+                className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+                dangerouslySetInnerHTML={{ __html: safeTitle }}
+              />
+            )}
+
+            {sub_title && (
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                {sub_title}
+              </p>
+            )}
+          </div>
 
         {/* ================= MAIN CONTENT ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">

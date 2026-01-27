@@ -2,16 +2,59 @@
 
 import Image from "next/image";
 import { Briefcase, Users, Target, CheckCircle } from "lucide-react";
-
+import Link from "next/link";
+import DOMPurify from "dompurify";
+import { Button } from "@/app/components/ui/button";
 /* Icon mapping from backend string → lucide icon */
 const iconMap: Record<string, any> = {
   Briefcase,
   Users,
   Target,
 };
+type HeroSectionProps = {
+  data?: {
+    title?: string;
+    sub_title?: string;
+    image?: string;
+    meta?: {
+      badge?: string;
+      description?: string;
+      video?: string;
 
-export default function HeroSection({ data }: any) {
-  const { meta } = data;
+      /* ✅ ADD THESE */
+      image?: string;
+      headline?: {
+        line1?: string;
+        line2?: string;
+      };
+      highlights?: {
+        icon?: string;
+        text?: string;
+      }[];
+
+      ctaPrimary?: {
+        label?: string;
+        url?: string;
+      };
+      ctaSecondary?: {
+        label?: string;
+        url?: string;
+      };
+    };
+  };
+};
+
+export default function HeroSection({ data }: HeroSectionProps) {
+   if (!data) return null;
+
+  const {
+    title = "",
+    sub_title = "",
+    meta = {},
+    image = null,
+  } = data;
+
+const safeTitle = title ? DOMPurify.sanitize(title) : "";
 
   return (
     <section className="p-10 min-h-[95vh] relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">

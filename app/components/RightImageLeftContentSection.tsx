@@ -1,18 +1,27 @@
 import React from "react";
 import { Button } from "@/app/components/ui/button";
-
+import DOMPurify from "dompurify"
 export default function RightImageLeftContentSection({ data }: any) {
   const { title, sub_title, meta } = data;
-
+const safeTitle = DOMPurify.sanitize(title || '');
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center gap-10">
         {/* Left Content */}
         <div className="lg:w-1/2 order-2 lg:order-1">
-          <h2 className="text-3xl font-bold">{title}</h2>
-          {sub_title && (
-            <p className="mt-2 text-lg text-gray-600">{sub_title}</p>
-          )}
+          {title && (
+              <div
+                className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3"
+                dangerouslySetInnerHTML={{ __html: safeTitle }}
+              />
+            )}
+
+            {sub_title && (
+              <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
+                {sub_title}
+              </p>
+            )}
+
           {meta.content && (
             <div
               className="mt-4 text-gray-700"

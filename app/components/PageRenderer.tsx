@@ -11,6 +11,8 @@ import LeadershipSection from "./sections/LeadershipSection";
 import LeftImageRightContentSection from "./sections/LeftImageRightContentSection";
 import RightImageLeftContentSectionn from "./sections/RightImageLeftContentSection";
 import SliderSection from "./sections/SliderSection";
+import USPList from "./sections/USPList";
+import HeroSlider from "./sections/HeroSlider";
 
 import { useMemo } from "react";
 import MiddleSection from "./sections/MiddleSection";
@@ -139,7 +141,11 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
           case "leadership":
             return <LeadershipSection key={section.id} data={section} />;
           case "slider":
-            return <SliderSection key={section.id} data={section} />;
+            // return <SliderSection key={section.id} data={section} />;
+            return <HeroSlider  key={section.id} data={section} />;
+            
+            case "usp_items":
+         return <USPList key={section.id} data={section} />;
           default:
             console.warn("Unhandled section:", section.section_key);
             return null;

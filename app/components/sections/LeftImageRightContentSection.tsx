@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
 import { CheckCircle } from "lucide-react";
-
+import DOMPurify from "dompurify"
+import { useEffect } from "react";
 interface Props {
   data: {
     title?: string; // HTML
@@ -23,16 +24,27 @@ interface Props {
   };
 }
 
-export default function LeftImageRightContentSection({ data }: Props) {
+export default function LeftImageRightContentSection({ data }: any) {
   const { title, sub_title, meta, image } = data;
-  const sectionImage = meta?.image || image;
+ 
+  // console.log(sectionImage,'sectionimage')
+   const safeTitle = DOMPurify.sanitize(title || '');
+const isValidImage = (img?: string | null) =>
+  typeof img === "string" && img.trim().length > 0;
+
+const sectionImage = isValidImage(meta?.image)
+  ? meta?.image
+  : isValidImage(image)
+  ? image
+  : null;
+   
 
   return (
     <section className="py-20 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           {/* ================= LEFT IMAGE ================= */}
-          {sectionImage && (
+          {meta?.image && sectionImage && (
             <div className="relative flex justify-center">
               {/* soft halo */}
               <div className="absolute w-[360px] h-[360px] rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-white blur-2xl" />
@@ -45,6 +57,8 @@ export default function LeftImageRightContentSection({ data }: Props) {
                   fill
                   className="object-cover"
                 />
+ 
+                
               </div>
             </div>
           )}
@@ -60,7 +74,7 @@ export default function LeftImageRightContentSection({ data }: Props) {
             {title && (
               <div
                 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3"
-                dangerouslySetInnerHTML={{ __html: title }}
+                dangerouslySetInnerHTML={{ __html: safeTitle }}
               />
             )}
 
@@ -83,7 +97,7 @@ export default function LeftImageRightContentSection({ data }: Props) {
             )}
 
             {/* CTA */}
-            {meta?.ctaPrimary?.url &&
+            {/* {meta?.ctaPrimary?.url &&
               meta.ctaPrimary.url !== "#" &&
               meta.ctaPrimary.url !== "@" && (
                 <Link href={meta.ctaPrimary.url}>
@@ -91,7 +105,24 @@ export default function LeftImageRightContentSection({ data }: Props) {
                     {meta.ctaPrimary.label} →
                   </Button>
                 </Link>
+              )} */}
+                  <div className="flex flex-wrap gap-4 pt-4">
+              {meta?.ctaPrimary?.url && (
+                <Link href={meta.ctaPrimary.url}>
+                  <Button className="px-6 py-3">
+                    {meta.ctaPrimary.label}
+                  </Button>
+                </Link>
               )}
+
+              {meta?.ctaSecondary?.url && (
+                <Link href={meta.ctaSecondary.url}>
+                  <Button variant="outline" className="px-6 py-3">
+                    {meta.ctaSecondary.label}
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
