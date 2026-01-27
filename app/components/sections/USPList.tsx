@@ -1,69 +1,65 @@
 "use client";
 
 import React from "react";
-import DOMPurify from "dompurify";
 
-interface USPSectionProps {
+interface USPItem {
+  key: string;
+  color: string;
+  label: string;
+  description?: string;
+  finalNumber?: number;
+}
+
+interface Props {
   data: {
-    title?: string;
-    sub_title?: string;
     meta?: {
-      usp_items?: string[];
+      usp_items?: USPItem[];
     };
   };
 }
 
-export default function LeftImageRightContentSection({
-  data,
-}: USPSectionProps) {
-  const { title, sub_title, meta } = data;
-
-  const safeTitle = DOMPurify.sanitize(title || "");
-  const uspItems: string[] = Array.isArray(meta?.usp_items)
-    ? meta.usp_items
+const USPList: React.FC<Props> = ({ data }) => {
+  const items = Array.isArray(data?.meta?.usp_items)
+    ? data.meta.usp_items
     : [];
 
-  if (!title && uspItems.length === 0) return null;
+  if (!items.length) return null;
 
   return (
-    <section className="py-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      <div className="container mx-auto px-6 lg:px-12 text-center">
-
-        {/* TITLE */}
-        {title && (
-          <h2
-            className="text-4xl font-bold text-gray-900"
-            dangerouslySetInnerHTML={{ __html: safeTitle }}
-          />
-        )}
-
-        {/* SUB TITLE */}
-        {sub_title && (
-          <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
-            {sub_title}
-          </p>
-        )}
-
-        {/* USP ITEMS */}
-        {uspItems.length > 0 && (
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {uspItems.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="w-12 h-12 mx-auto flex items-center justify-center rounded-full bg-emerald-500 text-white text-xl font-bold">
-                  ✓
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {items.map((item, idx) => (
+            <div
+              key={item.key || idx}
+              className="rounded-2xl p-6 shadow-md border bg-white hover:shadow-xl transition"
+            >
+              {/* Number */}
+              {item.finalNumber !== undefined && (
+                <div
+                  className={`text-4xl font-bold bg-gradient-to-r ${item.color} bg-clip-text text-transparent`}
+                >
+                  {item.finalNumber.toLocaleString()}+
                 </div>
-                <h3 className="mt-4 text-lg font-semibold text-gray-800">
-                  {item}
-                </h3>
-              </div>
-            ))}
-          </div>
-        )}
+              )}
 
+              {/* Label */}
+              <h3 className="mt-2 text-lg font-semibold text-gray-900">
+                {item.label}
+              </h3>
+
+              {/* Description */}
+              {item.description && (
+                <p className="mt-1 text-sm text-gray-600">
+                  {item.description}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
-}
+};
+
+export default USPList;

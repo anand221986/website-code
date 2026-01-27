@@ -13,6 +13,9 @@ import RightImageLeftContentSectionn from "./sections/RightImageLeftContentSecti
 import SliderSection from "./sections/SliderSection";
 import USPList from "./sections/USPList";
 import HeroSlider from "./sections/HeroSlider";
+import TrustedCompanies from "./sections/TrustedCompanies";
+
+
 
 import { useMemo } from "react";
 import MiddleSection from "./sections/MiddleSection";
@@ -146,6 +149,8 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             
             case "usp_items":
          return <USPList key={section.id} data={section} />;
+         case "client_items":
+       return <TrustedCompanies key={section.id} data={section} />;
           default:
             console.warn("Unhandled section:", section.section_key);
             return null;
