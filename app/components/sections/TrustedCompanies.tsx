@@ -30,7 +30,6 @@ const TrustedCompanies: React.FC<Props> = ({ data }) => {
     <section className="w-full py-12 bg-white overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
-dddfdfdfdf
           {/* Title from CMS */}
           {data.title && (
             <div
