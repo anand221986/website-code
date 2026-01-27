@@ -37,8 +37,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
     image = null,
   } = data;
 
-  const safeTitle = title ? DOMPurify.sanitize(title) : "";
-
+const safeTitle = title ? DOMPurify.sanitize(title) : "";
   return (
     <section className="pt-24 pb-10 min-h-[95vh] relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
 
