@@ -17,6 +17,10 @@ interface MiddleSectionProps {
         url: string;
         label: string;
       };
+      ctaSecondary?: {
+        url: string;
+        label: string;
+      };
     };
   };
 }
@@ -104,16 +108,24 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
                 )}
 
                 {/* CTA */}
+                <div className="flex flex-wrap gap-4 pt-4">
                 {meta?.ctaPrimary?.url && (
-                  <div className="pt-4">
+                   
                     <Link href={meta.ctaPrimary.url}>
                       <Button className="bg-blue-500 hover:opacity-90 text-white px-6 py-3 shadow-lg transition-all">
                         {meta.ctaPrimary.label} →
                       </Button>
                     </Link>
-                  </div>
+                 
                 )}
-
+                {meta?.ctaSecondary?.url && (
+                <Link href={meta.ctaSecondary.url}>
+                  <Button variant="outline" className="px-6 py-3">
+                    {meta.ctaSecondary.label}
+                  </Button>
+                </Link>
+              )}
+               </div>
               </div>
             </div>
           </div>

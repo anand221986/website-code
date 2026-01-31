@@ -61,29 +61,24 @@ export default function RightImageLeftContentSection({ data }: any) {
               </div>
             )}
 
-            {/* CTA */}
-                     {meta?.ctaPrimary?.url && (
-              <div className="pt-6">
-                <Link href={meta.ctaPrimary.url}>
-                  <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                    {meta.ctaPrimary.label}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-2"
-                    >
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
-                    </svg>
+            <div className="flex flex-wrap gap-4 pt-4">
+                {meta?.ctaPrimary?.url && (
+                   
+                    <Link href={meta.ctaPrimary.url}>
+                      <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg transition-all">
+                        {meta.ctaPrimary.label} →
+                      </Button>
+                    </Link>
+                 
+                )}
+                {meta?.ctaSecondary?.url && (
+                <Link href={meta.ctaSecondary.url}>
+                  <Button variant="outline" className="px-6 py-3">
+                    {meta.ctaSecondary.label}
                   </Button>
                 </Link>
-              </div>
-            )}
+              )}
+               </div>
           </div>
 
           {/* ================= RIGHT IMAGE ================= */}

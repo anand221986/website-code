@@ -109,7 +109,7 @@ const sectionImage = isValidImage(meta?.image)
                   <div className="flex flex-wrap gap-4 pt-4">
               {meta?.ctaPrimary?.url && (
                 <Link href={meta.ctaPrimary.url}>
-                  <Button className="px-6 py-3">
+                  <Button className="bg-emerald-500 hover:bg-emerald-600 px-6 py-3">
                     {meta.ctaPrimary.label}
                   </Button>
                 </Link>
