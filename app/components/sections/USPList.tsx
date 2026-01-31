@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { Users, Briefcase, Building2, TrendingUp, Award } from "lucide-react";
+import { Award } from "lucide-react";
+import { useParams } from "next/navigation";
+import { CLIENT_ICONS } from "../../lib/clientIcons";
 
 /* ---------------- Types ---------------- */
 
@@ -13,6 +15,7 @@ type USPItem = {
   description?: string;
   finalNumber?: number;
   colors?: string;
+  icon_key?: string;
 };
 
 type USPSection = {
@@ -21,15 +24,6 @@ type USPSection = {
   meta?: {
     usp_items?: USPItem[];
   };
-};
-
-/* ---------------- Icon Mapping ---------------- */
-
-const USP_ICON_MAP: Record<string, React.ElementType> = {
-  "Active Candidates": Users,
-  "Jobs Placed": Briefcase,
-  "Partner Companies": Building2,
-  "Success Rate": TrendingUp,
 };
 
 /* ---------------- Animated Number ---------------- */
@@ -68,21 +62,17 @@ function AnimatedNumber({
 export default function USPList() {
   const [uspSection, setUspSection] = useState<USPSection | null>(null);
   const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
 
   useEffect(() => {
     const fetchUSP = async () => {
       try {
-        const res = await fetch(
-          "http://72.61.229.100:3001/pages/slug/staffing",
-          { cache: "no-store" },
-        );
+        const res = await fetch(`http://72.61.229.100:3001/pages/slug/${slug}`, {
+          cache: "no-store",
+        });
         const json = await res.json();
-
         const sections = json?.data?.result?.sections ?? [];
-        const usp = sections.find(
-          (sec: any) => sec.section_key === "usp_items",
-        );
-
+        const usp = sections.find((sec: any) => sec.section_key === "usp_items");
         setUspSection(usp ?? null);
       } catch (error) {
         console.error("USP fetch failed", error);
@@ -90,22 +80,17 @@ export default function USPList() {
         setLoading(false);
       }
     };
-
     fetchUSP();
-  }, []);
+  }, [slug]);
 
   if (loading || !uspSection) return null;
 
-  const safeTitle = uspSection.title
-    ? DOMPurify.sanitize(uspSection.title)
-    : "";
-
+  const safeTitle = uspSection.title ? DOMPurify.sanitize(uspSection.title) : "";
   const uspItems = uspSection.meta?.usp_items ?? [];
-
   if (!safeTitle && uspItems.length === 0) return null;
 
   return (
-    <section className="relative py-20 px-6 bg-gradient-to-br from-emerald-50 via-white to-teal-50 overflow-hidden">
+    <section className="p-12 bg-white relative overflow-hidden scroll-reveal">
       {/* Decorative blobs */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-200/30 rounded-full blur-3xl" />
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-teal-200/30 rounded-full blur-3xl" />
@@ -131,19 +116,21 @@ export default function USPList() {
             {uspItems.map((item, index) => {
               const gradient = item.colors ?? "from-emerald-500 to-teal-500";
 
-              const Icon = USP_ICON_MAP[item.key] ?? Award;
+              // Get the Icon component type from CLIENT_ICONS
+             const Icon: React.ElementType =
+  CLIENT_ICONS[item.icon_key as keyof typeof CLIENT_ICONS]?.icon || Award;
+
+<Icon className="w-6 h-6" />
 
               return (
                 <div
                   key={index}
-                  className="relative bg-white/80 backdrop-blur-xl border border-gray-200
-                  rounded-2xl p-8 shadow-md transition-all duration-300"
+                  className="relative bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl p-8 shadow-md transition-all duration-300"
                 >
                   {/* Icon Badge */}
                   <div className="absolute -top-6 left-1/2 -translate-x-1/2">
                     <div
-                      className={`w-14 h-14 rounded-full bg-gradient-to-r ${gradient}
-                      flex items-center justify-center text-white shadow-lg`}
+                      className={`w-14 h-14 rounded-full bg-gradient-to-r ${gradient} flex items-center justify-center text-white shadow-lg`}
                     >
                       <Icon className="w-6 h-6" />
                     </div>
@@ -153,10 +140,7 @@ export default function USPList() {
                   <div className="space-y-4">
                     {item.finalNumber !== undefined && (
                       <p className="mt-3 text-4xl font-extrabold">
-                        <AnimatedNumber
-                          value={item.finalNumber}
-                          colors={gradient}
-                        />
+                        <AnimatedNumber value={item.finalNumber} colors={gradient} />
                         <span
                           className={`bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
                         >
@@ -164,11 +148,7 @@ export default function USPList() {
                         </span>
                       </p>
                     )}
-
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {item.label}
-                    </h3>
-
+                    <h3 className="text-xl font-semibold text-gray-900">{item.label}</h3>
                     {item.description && (
                       <p className="mt-3 text-sm text-gray-600 leading-relaxed">
                         {item.description}

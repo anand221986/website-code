@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
-
+import DOMPurify from "dompurify";
 interface FaqItem {
   question: string;
   answer: string;
@@ -18,6 +18,7 @@ interface FaqSectionProps {
 
 export default function FaqSection({ data }: FaqSectionProps) {
   const { faq_title, sub_title, faq_items } = data;
+  const safeTitle = faq_title ? DOMPurify.sanitize(faq_title) : "";
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleItem = (index: number) => {
@@ -27,10 +28,20 @@ export default function FaqSection({ data }: FaqSectionProps) {
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold">{faq_title}</h2>
-          {sub_title && <p className="text-gray-600 mt-2">{sub_title}</p>}
-        </div>
+             <div className="text-center mb-12">
+            {safeTitle && (
+              <div
+                className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+                dangerouslySetInnerHTML={{ __html: safeTitle }}
+              />
+            )}
+
+            {sub_title && (
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                {sub_title}
+              </p>
+            )}
+          </div>
 
         <div className="space-y-4 max-w-3xl mx-auto">
           {faq_items.map((item, index) => (
