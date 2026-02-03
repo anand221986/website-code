@@ -69,3 +69,9 @@ export function getPageData(slug: string) {
     { cache: "no-store" }
   );
 }
+export const fetchWebsiteSettings = async () => {
+   return fetchFromCMS<any>(
+    `/api/website-settings`,
+    { cache: "no-store" }
+  );
+};
