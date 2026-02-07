@@ -1,42 +1,54 @@
 "use client";
 
 import Image from "next/image";
-import { Briefcase, Users, Target, CheckCircle2, Calendar } from "lucide-react";
+import * as Icons from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { motion, type Variants } from "framer-motion";
 
+/* -------------------------------- TYPES -------------------------------- */
+
+type CTA = {
+  icon?: string;
+  link?: string;
+  label?: string;
+  variant?: "primary" | "outline";
+};
+
+type Point = {
+  icon?: string;
+  text?: string;
+};
+
 type HeroSectionProps = {
   data?: {
-    image?: string; // filename from backend
+    image?: string;
     meta?: {
-      image?:string;
       badge?: string;
       description?: string;
-      headline?: {
-        line1?: string;
-        line2?: string;
+      heading?: {
+        headingTitle?: string;
+        headingsubtitle?: string;
+        headinghighlight?: string;
       };
-      highlights?: {
-        icon?: string;
-        text?: string;
-      }[];
+      points?: Point[];
+      ctas?: CTA[];
+      image?: string;
     };
   };
 };
 
-const iconMap: Record<string, React.ElementType> = {
-  Briefcase,
-  Users,
-  Target,
+/* ---------------------------- ICON RESOLVER ----------------------------- */
+
+const getIcon = (iconName?: string) => {
+  if (!iconName) return Icons.CheckCircle2;
+  return (Icons as any)[iconName] || Icons.CheckCircle2;
 };
 
-/* ---------------- ANIMATION VARIANTS ---------------- */
+/* -------------------------- ANIMATION VARIANTS --------------------------- */
 
 const containerVariants: Variants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12 },
-  },
+  visible: { transition: { staggerChildren: 0.12 } },
 };
 
 const fadeUpVariants: Variants = {
@@ -44,10 +56,7 @@ const fadeUpVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.16, 1, 0.3, 1],
-    },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -56,27 +65,21 @@ const imageVariants: Variants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: {
-      duration: 0.8,
-      ease: [0.16, 1, 0.3, 1],
-    },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
+/* ------------------------------------------------------------------------ */
+
 export default function HeroSection({ data }: HeroSectionProps) {
-  if (!data) return null;
+  if (!data?.meta) return null;
 
-  const { meta = {}, image } = data;
+  const { meta, image } = data;
+  const { heading } = meta;
 
-  /**
-   * HERO IMAGE RULE (based on backend response)
-   * Hero image is a filename → served from /uploads/sections/
-   */
-  const heroImageSrc = meta.image
-    ? meta.image
-    : image
-      ? `http://72.61.229.100:3001/uploads/sections/${image}`
-      : null;
+  const heroImageSrc =
+    meta.image ||
+    (image ? `http://72.61.229.100:3001/uploads/sections/${image}` : null);
 
   return (
     <section className="relative min-h-[95vh] overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
@@ -88,7 +91,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
 
       <div className="relative z-10 container mx-auto px-6 lg:px-20 pb-20 pt-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* LEFT CONTENT */}
+          {/* LEFT */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -99,9 +102,9 @@ export default function HeroSection({ data }: HeroSectionProps) {
             {meta.badge && (
               <motion.span
                 variants={fadeUpVariants}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white shadow-sm text-sm font-semibold text-emerald-600"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white shadow-sm text-sm font-semibold text-black"
               >
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <Icons.Briefcase className="w-4 h-4 text-emerald-600" />
                 {meta.badge}
               </motion.span>
             )}
@@ -111,10 +114,11 @@ export default function HeroSection({ data }: HeroSectionProps) {
               variants={fadeUpVariants}
               className="text-[44px] leading-tight lg:text-[40px] font-bold text-slate-900"
             >
-              <span className="block">{meta.headline?.line1}</span>
+              <span className="block">{heading?.headingTitle}</span>
               <span className="block text-emerald-600">
-                {meta.headline?.line2}
+                {heading?.headinghighlight}
               </span>
+              <span className="block">{heading?.headingsubtitle}</span>
             </motion.h1>
 
             {/* DESCRIPTION */}
@@ -127,15 +131,14 @@ export default function HeroSection({ data }: HeroSectionProps) {
               </motion.p>
             )}
 
-            {/* HIGHLIGHTS */}
-            {meta.highlights?.length ? (
+            {/* POINTS */}
+            {meta.points?.length ? (
               <motion.ul
                 variants={containerVariants}
                 className="space-y-4 pt-2"
               >
-                {meta.highlights.map((item, idx) => {
-                  const Icon =
-                    (item.icon && iconMap[item.icon]) || CheckCircle2;
+                {meta.points.map((item, idx) => {
+                  const Icon = getIcon(item.icon);
 
                   return (
                     <motion.li
@@ -143,7 +146,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                       variants={fadeUpVariants}
                       className="flex items-center gap-4"
                     >
-                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 text-white shadow-sm">
+                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
                         <Icon className="w-4 h-4" />
                       </span>
                       <span className="text-slate-700 font-medium">
@@ -155,24 +158,41 @@ export default function HeroSection({ data }: HeroSectionProps) {
               </motion.ul>
             ) : null}
 
-            {/* CTA */}
-            <motion.div
-              variants={fadeUpVariants}
-              className="flex flex-wrap gap-4 pt-6"
-            >
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-base shadow-md">
-                <Briefcase className="w-4 h-4 mr-2" />
-                Start Hiring Today
-              </Button>
-
-              <Button
-                variant="outline"
-                className="px-6 py-3 text-base bg-white border-slate-300 text-slate-700 hover:text-emerald-500"
+            {/* CTA BUTTONS */}
+            {meta.ctas?.length && (
+              <motion.div
+                variants={fadeUpVariants}
+                className="flex flex-wrap gap-4 pt-6"
               >
-                <Calendar className="w-4 h-4 mr-2" />
-                Schedule Consultation
-              </Button>
-            </motion.div>
+                {meta.ctas.map((cta, idx) => {
+                  const Icon = getIcon(cta.icon);
+
+                  return (
+                    <Button
+                      key={idx}
+                      asChild
+                      variant={
+                        cta.variant === "outline" ? "outline" : "default"
+                      }
+                      className={
+                        cta.variant === "outline"
+                          ? "bg-white border-slate-300 text-black"
+                          : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                      }
+                    >
+                      <a
+                        href={cta.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon className="w-4 h-4 mr-2" />
+                        {cta.label}
+                      </a>
+                    </Button>
+                  );
+                })}
+              </motion.div>
+            )}
           </motion.div>
 
           {/* RIGHT IMAGE */}
@@ -182,27 +202,27 @@ export default function HeroSection({ data }: HeroSectionProps) {
             animate="visible"
             className="flex justify-center"
           >
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="relative w-full max-w-[400px] rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)] overflow-hidden"
-            >
-              {heroImageSrc && (
+            {heroImageSrc && (
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="relative w-full max-w-[400px] rounded-2xl bg-white shadow-xl overflow-hidden"
+              >
                 <Image
                   src={heroImageSrc}
-                  alt="IT & Non-IT Recruitment"
+                  alt="Hero Image"
                   width={700}
                   height={700}
                   className="w-full h-auto object-cover"
                   priority
                   unoptimized
                 />
-              )}
-            </motion.div>
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </div>
