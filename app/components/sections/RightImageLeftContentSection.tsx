@@ -1,50 +1,58 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import DOMPurify from "dompurify";
+import * as Icons from "lucide-react";
 import { Button } from "@/app/components/ui/button";
-import { CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+
+/* -------------------------------- TYPES -------------------------------- */
+
+type Point = {
+  icon?: string;
+  text?: string;
+};
+
+type CTA = {
+  icon?: string;
+  link?: string;
+  label?: string;
+  variant?: "primary" | "outline";
+};
 
 interface RightImageLeftContentSectionProps {
   data?: {
-    title?: string;
-    sub_title?: string;
     image?: string | null;
     meta?: {
-      content?: string;
-      ctaPrimary?: {
-        url: string;
-        label: string;
+      badge?: string;
+      heading?: {
+        headingTitle?: string;
+        headingsubtitle?: string;
       };
+      points?: Point[];
+      ctas?: CTA[];
     };
   };
 }
 
+/* ----------------------------- ICON HELPER ------------------------------ */
+
+const getIcon = (icon?: string) => {
+  if (!icon) return Icons.CheckCircle;
+  return (Icons as any)[icon] || Icons.CheckCircle;
+};
+
+/* ------------------------------------------------------------------------ */
+
 export default function RightImageLeftContentSection({
   data,
 }: RightImageLeftContentSectionProps) {
-  if (!data) return null;
+  if (!data?.meta) return null;
 
-  const { title, sub_title, meta, image } = data;
+  const { meta, image } = data;
 
-  const safeTitle = title ? DOMPurify.sanitize(title) : "";
-
-  // Parse CMS HTML safely (client-only)
-  const temp = document.createElement("div");
-  temp.innerHTML = meta?.content || "";
-
-  const description = temp.querySelector("p")?.textContent || "";
-
-  const bullets = Array.from(temp.querySelectorAll("span")).map(
-    (el) => el.textContent || "",
-  );
-
-  const imageUrl =
-    image && image.trim()
-      ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/${image}`
-      : null;
+  const imageUrl = image
+    ? `http://72.61.229.100:3001/uploads/clients/${image}`
+    : null;
 
   return (
     <section className="relative py-24 overflow-hidden bg-white">
@@ -56,27 +64,38 @@ export default function RightImageLeftContentSection({
             whileInView="visible"
             viewport={{ once: true }}
             variants={{
-              hidden: {},
-              visible: {
-                transition: { staggerChildren: 0.12 },
-              },
+              visible: { transition: { staggerChildren: 0.12 } },
             }}
             className="space-y-4 max-w-xl"
           >
+            {/* BADGE */}
+            {meta.badge && (
+              <motion.span
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-emerald-600"
+              >
+                {meta.badge}
+              </motion.span>
+            )}
+
             {/* TITLE */}
-            {safeTitle && (
-              <motion.div
+            {meta.heading?.headingTitle && (
+              <motion.h3
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 },
                 }}
                 className="text-3xl lg:text-4xl font-bold text-slate-900"
-                dangerouslySetInnerHTML={{ __html: safeTitle }}
-              />
+              >
+                {meta.heading.headingTitle}
+              </motion.h3>
             )}
 
             {/* SUBTITLE */}
-            {sub_title && (
+            {meta.heading?.headingsubtitle && (
               <motion.p
                 variants={{
                   hidden: { opacity: 0, y: 20 },
@@ -84,61 +103,70 @@ export default function RightImageLeftContentSection({
                 }}
                 className="text-lg text-slate-600"
               >
-                {sub_title}
-              </motion.p>
-            )}
-
-            {/* DESCRIPTION */}
-            {description && (
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                className="text-md text-slate-600"
-              >
-                {description}
+                {meta.heading.headingsubtitle}
               </motion.p>
             )}
 
             {/* BULLETS */}
-            <motion.ul className="space-y-2 pt-2">
-              {bullets.map((item, idx) => (
-                <motion.li
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{
-                    duration: 0.4,
-                    ease: "easeOut",
-                    delay: idx * 0.08,
-                  }}
-                  viewport={{ once: true }}
-                  className="flex items-start gap-4"
-                >
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1">
-                    <CheckCircle className="w-4 h-4" />
-                  </span>
-                  <span className="text-slate-700 text-sm font-medium mt-1">
-                    {item}
-                  </span>
-                </motion.li>
-              ))}
-            </motion.ul>
+            {meta.points?.length ? (
+              <motion.ul className="space-y-2 pt-2">
+                {meta.points.map((item, idx) => {
+                  const Icon = getIcon(item.icon);
+
+                  return (
+                    <motion.li
+                      key={idx}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.4,
+                        ease: "easeOut",
+                        delay: idx * 0.08,
+                      }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-4"
+                    >
+                      <span className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1">
+                        <Icon className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="text-slate-700 text-sm font-medium mt-1">
+                        {item.text}
+                      </span>
+                    </motion.li>
+                  );
+                })}
+              </motion.ul>
+            ) : null}
 
             {/* CTA */}
-            {meta?.ctaPrimary?.url && meta?.ctaPrimary?.label && (
+            {meta.ctas?.length && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
                 viewport={{ once: true }}
+                className="pt-4"
               >
-                <Link href={meta.ctaPrimary.url}>
-                  <Button className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 shadow-md">
-                    {meta.ctaPrimary.label} →
-                  </Button>
-                </Link>
+                {meta.ctas.map((cta, idx) => {
+                  const Icon = getIcon(cta.icon);
+
+                  return (
+                    <Button
+                      key={idx}
+                      asChild
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 shadow-md"
+                    >
+                      <a
+                        href={cta.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon className="w-4 h-4 mr-2" />
+                        {cta.label}
+                      </a>
+                    </Button>
+                  );
+                })}
               </motion.div>
             )}
           </motion.div>
@@ -153,10 +181,10 @@ export default function RightImageLeftContentSection({
               className="relative flex justify-center"
             >
               {/* Glow */}
-              <div className="absolute w-[420px] h-[420px] rounded-full bg-emerald-200/50 blur-3xl" />
+              <div className="absolute w-[420px] h-[420px] rounded-xl bg-emerald-200/50 blur-3xl" />
 
               {/* Image card */}
-              <div className="relative w-[360px] h-[360px] rounded-full bg-white shadow-xl overflow-hidden">
+              <div className="relative w-[360px] h-[360px] rounded-xl bg-white shadow-xl overflow-hidden">
                 <Image
                   src={imageUrl}
                   alt="Section image"
